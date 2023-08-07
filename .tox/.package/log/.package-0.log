@@ -1,0 +1,4 @@
+action: .package, msg: getenv
+cwd: /mnt/d/nl2query/.tox
+cmd: /usr/bin/python3 -m virtualenv --no-download --python /usr/bin/python3 .package
+ModuleNotFoundError: No module named 'virtualenv.seed.via_app_data'
