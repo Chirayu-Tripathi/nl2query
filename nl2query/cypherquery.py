@@ -122,16 +122,16 @@ class CypherQuery(QueryLanguage):
         pattern = "|".join(
             re.escape(key)
             for key in {
-                **self.node_labels_mapping,
                 **self.relationships_mapping,
+                **self.node_labels_mapping,
                 **upper_text,
             }.keys()
         )
         query = re.sub(
             pattern,
             lambda x: {
-                **self.node_labels_mapping,
                 **self.relationships_mapping,
+                **self.node_labels_mapping,
                 **upper_text,
             }[x.group()],
             query,

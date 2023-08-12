@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "nl2query"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Chirayu-Tripathi <chirayutripathi7@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-torch = { version = "=2.0.1", source = "pytorch" }
+torch = { version = "^2.0.1", source = "pytorch" }
 regex = "^2023.6.3"
-transformers = "=4.31.0"
+transformers = "^4.31.0"
 pandas = "^1.5.3"
 
 [tool.poetry.group.dev.dependencies]
