@@ -40,7 +40,7 @@ Suppose you want to convert the textual question to Mongo query, follow the code
 ```py
 from nl2query import MongoQuery
 import pymongo # import if performing analysis using python client
-keys = ['_id', 'index', 'passengerid', 'survived', 'Pclass', 'name', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'cabin', 'embarked'] #keys present in the collection to be queries.
+keys = ['_id', 'index', 'passengerid', 'survived', 'Pclass', 'name', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'cabin', 'embarked'] #keys present in the collection to be queried.
 queryfier = MongoQuery(keys, 'titanic')
 queryfier.generate_query('''which pclass has the minimum average fare?''')
 
