@@ -3,9 +3,6 @@
  > Convert natural language text inputs to Pandas, MongoDB, Kusto, and Cypher(Neo4j) queries. The models used are fine-tuned versions of CodeT5+ 220m models.
 
 [![PyPI version][pypi-image]][pypi-url]
-[![Build status][build-image]][build-url]
-[![Code coverage][coverage-image]][coverage-url]
-[![GitHub stars][stars-image]][stars-url]
 [![Support Python versions][versions-image]][versions-url]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -43,7 +40,7 @@ Suppose you want to convert the textual question to Mongo query, follow the code
 ```py
 from nl2query import MongoQuery
 import pymongo # import if performing analysis using python client
-keys = ['_id', 'index', 'passengerid', 'survived', 'Pclass', 'name', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'cabin', 'embarked'] #keys present in the collection to be queries.
+keys = ['_id', 'index', 'passengerid', 'survived', 'Pclass', 'name', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'cabin', 'embarked'] #keys present in the collection to be queried.
 queryfier = MongoQuery(keys, 'titanic')
 queryfier.generate_query('''which pclass has the minimum average fare?''')
 
@@ -95,3 +92,10 @@ res = queryfier.generate_query('find the dob of people who have "Andreia" in the
 ## Changelog
 
 Refer to the [CHANGELOG.md](CHANGELOG.md) file.
+
+<!-- Badges -->
+
+[pypi-image]: https://img.shields.io/pypi/v/nl2query
+[pypi-url]: https://pypi.org/project/nl2query/
+[versions-image]: https://img.shields.io/pypi/pyversions/nl2query
+[versions-url]: https://pypi.org/project/nl2query/
