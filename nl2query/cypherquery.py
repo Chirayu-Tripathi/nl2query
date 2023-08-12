@@ -13,7 +13,7 @@ class CypherQuery(QueryLanguage):
         self,
         node_labels_properties: dict,
         relationships: list,
-        path: str = "Chirayu/cql_best_pipe_plus",
+        path: str = "Chirayu/nl2cql",
     ):
         """Constructor for CypherQuery class"""
         self.path = path

@@ -10,9 +10,7 @@ from .base import QueryLanguage
 class PandasQuery(QueryLanguage):
     """Base QueryLanguage class extended to perform query generation for Pandas"""
 
-    def __init__(
-        self, df: object, df_name: str, path: str = "Chirayu/p_pipe_best_plus"
-    ):
+    def __init__(self, df: object, df_name: str, path: str = "Chirayu/nl2pandas"):
         """Constructor for PandasQuery class"""
         self.path = path
         self.df = df

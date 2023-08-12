@@ -10,7 +10,7 @@ class KustoQuery(QueryLanguage):
     """Base QueryLanguage class extended to perform query generation for Kusto"""
 
     def __init__(
-        self, column_names: list, table_name: str, path: str = "Chirayu/kql_pipe_best"
+        self, column_names: list, table_name: str, path: str = "Chirayu/nl2kql"
     ):
         """Constructor for KustoQuery class"""
         self.path = path

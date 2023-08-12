@@ -13,7 +13,7 @@ class MongoQuery(QueryLanguage):
         self,
         collection_keys: list,
         collection_name: str,
-        path: str = "Chirayu/MQL_best_pipe",
+        path: str = "Chirayu/nl2mongo",
     ):
         """Constructor for MongoQuery class"""
         self.path = path
