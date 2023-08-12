@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nl2query"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
 authors = ["Chirayu-Tripathi <chirayutripathi7@gmail.com>"]
 readme = "README.md"

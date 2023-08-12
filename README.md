@@ -57,11 +57,10 @@ Suppose you want to convert the textual question to Kusto query, follow the code
 
 ```py
 from nl2query import KustoQuery
-cols = ['vendor_id', 'pickup_datetime', 'dropoff_datetime', 'passenger_count', 'trip_distance', 'pickup_longitude', 'pickup_latitude', 'rate_code', 'store_and_fwd_flag', 'dropoff_longitude', 'dropoff_latitude', 'payment_type', 'fare_amount', 'surcharge', 'mta_tax', 'Tip_amount', 'tolls_amount', 'total_amount']
+cols = ['conference', 'sessionid', 'session_title', 'session_type', 'owner', 'participants', 'URL', 'level', 'session_location', 'starttime', 'duration', 'time_and_duration', 'kusto_affinity']
 
-queryfier = KustoQuery(cols, 'nyc_taxi')
-queryfier.generate_query('''find the vendor ids for all the tips that are greater than the average tip''')
-
+queryfier = KustoQuery(cols, 'ConferenceSessions')
+queryfier.generate_query('''find the session ids which have duration greater than 10 and having Manoj Raheja as the owner''')
 ```
 
 ## 4. Cypher(Neo4j) Query
