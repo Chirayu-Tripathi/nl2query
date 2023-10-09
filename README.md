@@ -1,7 +1,7 @@
 # nl2query
 
  > Convert natural language text inputs to Pandas, MongoDB, Kusto, and Cypher(Neo4j) queries. The models used are fine-tuned versions of CodeT5+ 220m models.
-
+[![Downloads](https://static.pepy.tech/badge/nl2query)](https://pepy.tech/project/nl2query)
 [![PyPI version][pypi-image]][pypi-url]
 [![Support Python versions][versions-image]][versions-url]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
