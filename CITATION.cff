@@ -1,0 +1,22 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: nl2query
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Chirayu
+    family-names: Tripathi
+    email: chirayutripathi7@gmail.com
+    orcid: 'https://orcid.org/0000-0001-9495-0063'
+repository-code: 'https://github.com/Chirayu-Tripathi/nl2query.git'
+abstract: >-
+  Convert natural language text inputs to Pandas, MongoDB,
+  Kusto, and Cypher(Neo4j) queries. The models used are
+  fine-tuned versions of CodeT5+ 220m and Phi2 models.
+license: MIT
+version: 0.1.6
+date-released: '2024-04-27'

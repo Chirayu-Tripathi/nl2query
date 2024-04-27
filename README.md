@@ -1,6 +1,6 @@
 # nl2query
 
- > Convert natural language text inputs to Pandas, MongoDB, Kusto, and Cypher(Neo4j) queries. The models used are fine-tuned versions of CodeT5+ 220m models.
+ > Convert natural language text inputs to Pandas, MongoDB, Kusto, and Cypher(Neo4j) queries. The models used are fine-tuned versions of CodeT5+ 220m and Phi2 model.
 
 
 [![Downloads](https://static.pepy.tech/badge/nl2query)](https://pepy.tech/project/nl2query)
@@ -37,21 +37,123 @@ queryfier.generate_query('''which cabinet has average age less than 21?''') #Gro
 ```
 
 ## 2. MongoDB Query
-Suppose you want to convert the textual question to Mongo query, follow the code below
+Suppose you want to convert the textual question to Mongo query, follow the instruction code below
+
+### MongoDB query using CodeT5
+
+The generate_query method takes a textual query and returns a MongoDB query. It also accepts optional parameters to control the generation process, such as num_beams, max_length, repetition_penalty, length_penalty, early_stopping, top_p, top_k, and num_return_sequences.
 
 ```py
 from nl2query import MongoQuery
 import pymongo # import if performing analysis using python client
 keys = ['_id', 'index', 'passengerid', 'survived', 'Pclass', 'name', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'cabin', 'embarked'] #keys present in the collection to be queried.
-queryfier = MongoQuery(keys, 'titanic')
+queryfier = MongoQuery('T5', collection_keys = keys, collection_name = 'titanic')
 queryfier.generate_query('''which pclass has the minimum average fare?''')
 
 keys = ['_id', 'index', 'total_bill', 'tip', 'sex', 'smoker', 'day', 'time', 'size'] 
-queryfier = MongoQuery(keys, 'tips')
+queryfier = MongoQuery('T5', collection_keys = keys, collection_name = 'titanic')
 queryfier.generate_query('''find the day on which combined sales was highest''')
 
 ```
 In the above code the keys can be found by running the following piece `db.tips.find_one({}).keys()`
+
+### MongoDB query using Phi2
+
+The generate_query method takes a database schema and a textual query and returns a MongoDB query. It also accepts optional parameters to control the generation process, such as max_length, no_repeat_ngram_size, and repetition_penalty. *The Phi2 model performs better than the CodeT5+ model.*
+
+```py
+from nl2query import MongoQuery
+schema = shipwreck = '''{
+  "collections": [
+    {
+      "name": "shipwrecks",
+      "indexes": [
+        {
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "key": {
+            "feature_type": 1
+          }
+        },
+        {
+          "key": {
+            "chart": 1
+          }
+        },
+        {
+          "key": {
+            "latdec": 1,
+            "londec": 1
+          }
+        }
+      ],
+      "uniqueIndexes": [],
+      "document": {
+        "properties": {
+          "_id": {
+            "bsonType": "string"
+          },
+          "recrd": {
+            "bsonType": "string"
+          },
+          "vesslterms": {
+            "bsonType": "string"
+          },
+          "feature_type": {
+            "bsonType": "string"
+          },
+          "chart": {
+            "bsonType": "string"
+          },
+          "latdec": {
+            "bsonType": "double"
+          },
+          "londec": {
+            "bsonType": "double"
+          },
+          "gp_quality": {
+            "bsonType": "string"
+          },
+          "depth": {
+            "bsonType": "string"
+          },
+          "sounding_type": {
+            "bsonType": "string"
+          },
+          "history": {
+            "bsonType": "string"
+          },
+          "quasou": {
+            "bsonType": "string"
+          },
+          "watlev": {
+            "bsonType": "string"
+          },
+          "coordinates": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "double"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "version": 1
+}'''
+
+queryfier = MongoQuery('Phi2')
+text = 'Find the count of shipwrecks for each unique combination of "latdec" and "longdec"'
+queryfier.generate_query(schema, text, max_length = 1024)
+
+text = 'Find the total count of shipwreck for each unique category of chart'
+queryfier.generate_query(schema, text, max_length = 1024)
+
+
+```
 
 
 ## 3. Kusto Query

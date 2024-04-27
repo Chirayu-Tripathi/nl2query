@@ -1,12 +1,31 @@
+"""
+This module contains classes for generating MongoDB queries using different models.
+
+Classes:
+    MongoQueryT5: Uses T5 model to generate MongoDB queries.
+    MongoQueryPhi2: Uses Phi2 model to generate MongoDB queries.
+    MongoQuery: Factory class to create an instance of either MongoQueryT5 or MongoQueryPhi2.
+
+Each class has methods to load the model, preprocess the input, and generate the query.
+
+Example:
+    To create an instance of MongoQueryT5:
+    >>> mq = MongoQuery('T5', collection_keys=['key1', 'key2'], collection_name='my_collection')
+
+    To generate a query:
+    >>> query = mq.generate_query('Find all documents where key1 is "value1"')
+
+"""
+
+
 import re
-
 import torch
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from peft import PeftModel
 from .base import QueryLanguage
 
 
-class MongoQuery(QueryLanguage):
+class MongoQueryT5(QueryLanguage):
     """Base QueryLanguage class extended to perform query generation for MongoDB"""
 
     def __init__(
@@ -26,7 +45,7 @@ class MongoQuery(QueryLanguage):
         # self.db = db
 
     def _load_model(self) -> object:
-        """Constructor for MongoQuery class"""
+        """Helper function to load the model for MongoQuery class"""
         model = AutoModelForSeq2SeqLM.from_pretrained(self.path)
         self.tokenizer = AutoTokenizer.from_pretrained(self.path)
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -97,3 +116,87 @@ class MongoQuery(QueryLanguage):
             pattern, lambda x: {**self.keys_mapping, **upper_text}[x.group()], query
         )
         return query
+
+class MongoQueryPhi2(QueryLanguage):
+    """Base QueryLanguage class extended to perform query generation for MongoDB using Phi2 model."""
+    def __init__(
+        self,
+        path: str = "Chirayu/phi-2-mongodb",
+    ):
+        """Constructor for MongoQuery class"""
+        
+        # self.db_schema = db_schema
+        self.adapter = path
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._load_model()
+        # self.db = db
+
+    def _load_model(self) -> object:
+        """Helper function to load the model for MongoQuery class"""
+
+        base_model_id = "microsoft/phi-2"
+        self.tokenizer = AutoTokenizer.from_pretrained(base_model_id, use_fast=True)
+        compute_dtype = getattr(torch, "float16")
+        bnb_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=compute_dtype,
+                bnb_4bit_use_double_quant=True,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+                base_model_id, trust_remote_code=True, quantization_config=bnb_config, revision="refs/pr/23", device_map={"": 0}, torch_dtype="auto", flash_attn=True, flash_rotary=True, fused_dense=True
+        )
+
+        self.model = PeftModel.from_pretrained(model, self.adapter).to(self.device)
+        return self.model, self.tokenizer
+    
+    def preprocess(self, db_schema: str, text: str) -> str:
+        """Pre-Process the db_schema by removing new line and extra spaces, and creates a prompt for the model."""
+        db_schema = db_schema.replace("\n","").replace("  ","")
+
+        prompt_template = f"""<s> 
+        Task Description:
+        Your task is to create a MongoDB query that accurately fulfills the provided Instruct while strictly adhering to the given MongoDB schema. Ensure that the query solely relies on keys and columns present in the schema. Minimize the usage of lookup operations wherever feasible to enhance query efficiency.
+
+        MongoDB Schema: 
+        {db_schema}
+
+        ### Instruct:
+        {text}
+
+        ### Output:
+        """
+
+        return prompt_template
+
+    def generate_query(
+        self,
+        db_schema: str,
+        textual_query: str,
+        max_length: int = 1024,
+        no_repeat_ngram_size: int = 10,
+        repetition_penalty: int = 1.02,
+    ) -> str:
+        """Execute the Phi2 to generate the query for the MongoDB framework."""
+        prompt = self.preprocess(db_schema, textual_query)
+        model_inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        output = self.model.generate(**model_inputs, max_length = max_length, no_repeat_ngram_size = no_repeat_ngram_size, repetition_penalty = repetition_penalty, pad_token_id = self.tokenizer.eos_token_id, eos_token_id = self.tokenizer.eos_token_id)[0]
+        query = self.tokenizer.decode(output, skip_special_tokens=False)
+        start_idx = query.index('Output')
+        try:
+            stop_idx = query.index('</s>')
+        except Exception as e:
+            print(e)
+            stop_idx = len(query)
+        return query[start_idx+8:stop_idx].strip()
+
+
+class MongoQuery:
+    """Primary class to call the appropriate model"""
+    def __new__(cls, model_type, **kwargs):
+        if model_type == 'T5':
+            return MongoQueryT5(**kwargs)
+        elif model_type == 'Phi2':
+            return MongoQueryPhi2(**kwargs)
+        else:
+            raise ValueError("Invalid model_type. Expected 'T5' or 'Phi2'")
