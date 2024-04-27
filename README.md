@@ -4,6 +4,8 @@
 
 
 [![Downloads](https://static.pepy.tech/badge/nl2query)](https://pepy.tech/project/nl2query)
+[![Build Status][build-image]][build-url]
+[![][stars-image]][stars-url]
 [![PyPI version][pypi-image]][pypi-url]
 [![Support Python versions][versions-image]][versions-url]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -42,6 +44,8 @@ Suppose you want to convert the textual question to Mongo query, follow the inst
 ### MongoDB query using CodeT5
 
 The generate_query method takes a textual query and returns a MongoDB query. It also accepts optional parameters to control the generation process, such as num_beams, max_length, repetition_penalty, length_penalty, early_stopping, top_p, top_k, and num_return_sequences.
+
+NOTE: GPU will be required to run Phi2 as quantization is enabled using *load_in_4bit*.
 
 ```py
 from nl2query import MongoQuery
@@ -202,3 +206,7 @@ Refer to the [CHANGELOG.md](CHANGELOG.md) file.
 [pypi-url]: https://pypi.org/project/nl2query/
 [versions-image]: https://img.shields.io/pypi/pyversions/nl2query
 [versions-url]: https://pypi.org/project/nl2query/
+[build-image]: https://github.com/Chirayu-Tripathi/nl2query/actions/workflows/build.yaml/badge.svg
+[build-url]: https://github.com/Chirayu-Tripathi/nl2query/actions/workflows/build.yaml
+[stars-image]: https://img.shields.io/github/stars/Chirayu-Tripathi/nl2query
+[stars-url]: https://github.com/Chirayu-Tripathi/nl2query

@@ -166,7 +166,7 @@ class MongoQueryPhi2(QueryLanguage):
 
     def preprocess(self, db_schema: str, text: str) -> str:
         """Pre-Process the db_schema by removing new line and extra spaces, and creates a prompt for the model."""
-        db_schema = db_schema.replace("\n", "").replace("  ", "")
+        db_schema = db_schema.replace("\n", " ").replace("  ", "")
 
         prompt_template = f"""<s> 
         Task Description:
