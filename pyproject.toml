@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.8"
 torch = { version = "^2.0.1", source = "pytorch" }
 regex = "^2023.6.3"
-transformers = "^4.38.2"
+transformers = "^4.39.0"
 pandas = "^1.5.3"
 peft = "^0.5.0"
 
